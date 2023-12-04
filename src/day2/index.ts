@@ -67,19 +67,70 @@ export const getMaximumScorePerColor = (
   return colorAndNumber
 }
 
+const inputCombination = {
+  red: 12,
+  green: 13,
+  blue: 14,
+}
+
 // function that validates the possibility of a game
 // and returns true if the game is possible
 // and returns false if the game is not possible
-// it takes the first input
+// it takes a game as the first argument and an inputCombination as the second argument
+// for each color in the inputCombination it checks the game's maximumScorePerColor equivalent color
+// and if the maximumScorePerColor is greater than the inputCombination's color then it returns false
+// otherwise it returns true
+export const validateGamePossibility = (
+  maximumScorePerColor: { [key: string]: number },
+  inputCombination: { [key: string]: number }
+) => {
+  const keys = Object.keys(maximumScorePerColor)
+  const isValid = keys.every((key) => {
+    const maximumScore = maximumScorePerColor[key]
+    const inputCombinationScore = inputCombination[key]
+    return maximumScore <= inputCombinationScore
+  })
+  return isValid
+}
 
 export const part1 = (input?: string) => {
   const textInput = getInput(input)
-  const parsedGame = parseGameToDictionaryOfColorAndNumber(
-    parseLine(textInput[0])
-  )
-  const game = {
-    game: parsedGame.game,
-    maximumScorePerColor: getMaximumScorePerColor(parsedGame.results),
-  }
-  return game
+
+  return textInput
+    .map((line) => {
+      const parsedGame = parseGameToDictionaryOfColorAndNumber(parseLine(line))
+      const game = {
+        game: parsedGame.game,
+        maximumScorePerColor: getMaximumScorePerColor(parsedGame.results),
+      }
+      const isPossible = validateGamePossibility(
+        game.maximumScorePerColor,
+        inputCombination
+      )
+
+      return {
+        game: game.game,
+        isPossible,
+      }
+    })
+    .filter((game) => game.isPossible)
+    .reduce((acc, game) => {
+      return acc + game.game
+    }, 0)
+}
+
+export const part2 = (input?: string) => {
+  const textInput = getInput(input)
+
+  return textInput
+    .map((line) => {
+      const parsedGame = parseGameToDictionaryOfColorAndNumber(parseLine(line))
+      const maximumScorePerColor = getMaximumScorePerColor(parsedGame.results)
+      return Object.values(maximumScorePerColor).reduce((acc, value) => {
+        return acc * value
+      }, 1)
+    })
+    .reduce((acc, power) => {
+      return acc + power
+    }, 0)
 }

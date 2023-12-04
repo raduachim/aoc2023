@@ -3,9 +3,11 @@ import {
   getMaximumScorePerColor,
   parseLine,
   validateGamePossibility,
+  part1,
+  part2
 } from './index'
 
-describe.only('day2', () => {
+describe('day2', () => {
   describe('parseLine', () => {
     it('works', () => {
       const input: string =
@@ -83,9 +85,50 @@ describe.only('day2', () => {
         green: 13,
         blue: 14,
       }
-      const actual = validateGamePossibility(inputGame, inputCombination)
+      const actual = validateGamePossibility(
+        inputGame.maxiumumScorePerColor,
+        inputCombination
+      )
       const expected = false
       expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('part1', () => {
+    it('works with the test input', () => {
+      const input = `
+      Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+      Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+      Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+      Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+      Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`
+
+      const actual = part1(input)
+      expect(actual).toEqual(8)
+    })
+
+    it('works with the real input', () => {
+      const actual = part1()
+      expect(actual).toEqual(2541)
+    })
+  })
+
+  describe('part2', () => {
+    it('works with the test input', () => {
+      const input = `
+      Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+      Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+      Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+      Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+      Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
+      `
+      const actual = part2(input)
+      expect(actual).toEqual(2286)
+    })
+
+    it('works with the real input', () => {
+      const actual = part2()
+      expect(actual).toEqual(66016)
     })
   })
 })
