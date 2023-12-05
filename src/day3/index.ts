@@ -33,11 +33,11 @@ export const findNumbers = (matrix: string[][]) => {
     let coordinates: number[][] = []
     for (let j = 0; j < row.length; j++) {
       const character = row[j]
-      if (Number(character)) {
+      if (Number(character) || character === '0') {
         number.push(character)
         coordinates.push([i, j])
       } else {
-        if (number.length > 1) {
+        if (number.length >= 1) {
           numbers.push({ number: Number(number.join('')), coordinates })
         }
         number = []
@@ -76,10 +76,12 @@ export const findDigitsAroundCoordinates = (
     const [row, column] = coordinates
     const digits: number[][] = []
     for (let i = row - 1; i <= row + 1; i++) {
+      if (i < 0 || i > matrix.length - 1) continue
       const row = matrix[i]
       for (let j = column - 1; j <= column + 1; j++) {
+        if (j < 0 || j > matrix[0].length - 1) continue
         const character = row[j]
-        if (Number(character)) {
+        if (Number(character) || character === '0') {
           digits.push([i, j])
         }
       }
@@ -125,20 +127,67 @@ export const filterOutDuplicates = (list: number[]) => {
   return filteredList
 }
 
+// function that takes 3 inputs
+// 1. matrix
+// 2. coordinates of a digit
+// 3. number
+// the function then checks in the matrix for special characters around the coordinates of the digits
+// it searches in a grid of 3x(3 + length of the number) around the coordinates
+// a special character is a character that is not a digit, not a dot and not a zero
+// if it finds a special character, it returns the number
+// if it does not find a special character, it returns undefined
+export const checkForSpecialCharacters = (
+  matrix: string[][],
+  coordinates: number[],
+  number: number
+) => {
+  const [row, column] = coordinates
+  const length = number.toString().length
+  const isKnown = number === 154
+
+  if (isKnown) {
+    console.log('row', row)
+    console.log('column', column)
+    console.log('length', length)
+  }
+  for (let i = row - 1; i <= row + 1; i++) {
+    if (i < 0 || i > matrix.length - 1) continue
+    const row = matrix[i]
+    for (let j = column - 1; j <= column + length; j++) {
+      if (j < 0) continue
+      const character = row[j]
+      if (character !== '.' && !Number(character) && character !== '0') {
+        return number
+      }
+    }
+  }
+  return undefined
+}
+
 export const part1 = (input?: string) => {
   const textInput = getInput(input)
   const matrix = parseInput(textInput)
 
   const numbers = findNumbers(matrix)
-  const specialCharactersCoordinates = findSpecialCharacters(matrix)
-  const digitsCoordinates = specialCharactersCoordinates.flatMap(
-    (coordinates) => findDigitsAroundCoordinates(matrix, coordinates)
-  )
-  const result = filterOutDuplicates(
-    digitsCoordinates
-      .map((coordinates) => findNumberByCoordinates(numbers, coordinates))
-      .filter((number) => !!number)
-  )
+  return numbers
+    .filter(({ coordinates, number }) =>
+      checkForSpecialCharacters(matrix, coordinates[0], number)
+    )
+    .map(({ number }) => number)
+  // .reduce((acc, number) => acc + number, 0)
 
-  return result.reduce((acc, number) => acc + number, 0)
+  // const specialCharactersCoordinates = findSpecialCharacters(matrix)
+
+  // const digitsCoordinates = specialCharactersCoordinates.flatMap(
+  //   (coordinates) => findDigitsAroundCoordinates(matrix, coordinates)
+  // )
+  // const result = filterOutDuplicates(
+  //   digitsCoordinates
+  //     .map((coordinates) => findNumberByCoordinates(numbers, coordinates))
+  //     .filter((number) => !!number)
+  // )
+
+  // // return result
+
+  // return result.reduce((acc, number) => acc + number, 0)
 }
