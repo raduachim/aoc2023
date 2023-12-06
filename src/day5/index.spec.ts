@@ -364,10 +364,51 @@ describe.only('day5', () => {
     const input = readFileSync('./src/day5/input', 'utf8')
     const parsed = parseInput(input)
 
-    expect(getMin(parsed.seeds.map(seed => calculate(parsed, seed)))).toEqual(107430936)
+    expect(getMin(parsed.seeds.map((seed) => calculate(parsed, seed)))).toEqual(
+      107430936
+    )
   })
 
-  it('works for part2 with test input', () => {
+  // function that takes a list of numbers as input and groups them into groups of 2
+  // and then returns a list of the new groups
+  const group = (numbers: number[]): number[][] => {
+    const groups: number[][] = []
+    for (let i = 0; i < numbers.length; i += 2) {
+      groups.push([numbers[i], numbers[i + 1]])
+    }
+    return groups
+  }
 
+  // function that takes an array of 2 numbers as input
+  // the first number is the start of the range
+  // the second number is the length of the range
+  // using the fastest way to iterate over a range in JavaScript
+  // it will use the calculate function to calculate the result for each number in the range
+  // it will then return the minimum result
+
+  const calculateRange = (parsed: Input, range: number[]): number => {
+    let min = calculate(parsed, range[0])
+
+    for (let i = range[0]; i < range[0] + range[1]; i++) {
+      const result = calculate(parsed, i)
+
+      if (result < min) {
+        min = result
+      }
+    }
+
+    return min
+  }
+
+  it('works for part2 with test input', () => {
+    const input = readFileSync('./src/day5/input', 'utf8')
+    const parsed = parseInput(input)
+    // console.log(group(parsed.seeds))
+
+    const results = group(parsed.seeds).map((range) =>
+      calculateRange(parsed, range)
+    )
+
+    console.log(getMin(results))
   })
 })
