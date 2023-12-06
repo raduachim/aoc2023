@@ -366,4 +366,8 @@ describe.only('day5', () => {
 
     expect(getMin(parsed.seeds.map(seed => calculate(parsed, seed)))).toEqual(107430936)
   })
+
+  it('works for part2 with test input', () => {
+
+  })
 })
