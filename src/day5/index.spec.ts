@@ -387,11 +387,10 @@ describe.only('day5', () => {
   // it will then return the minimum result
 
   const calculateRange = (parsed: Input, range: number[]): number => {
-    let min = calculate(parsed, range[0])
+    let min = Infinity
 
     for (let i = range[0]; i < range[0] + range[1]; i++) {
       const result = calculate(parsed, i)
-
       if (result < min) {
         min = result
       }
@@ -405,9 +404,11 @@ describe.only('day5', () => {
     const parsed = parseInput(input)
     // console.log(group(parsed.seeds))
 
-    const results = group(parsed.seeds).map((range) =>
-      calculateRange(parsed, range)
-    )
+    const results = group(parsed.seeds).map((range) => {
+      const result = calculateRange(parsed, range)
+      console.log('range - result', range, result)
+      return result
+    })
 
     console.log(getMin(results))
   })
