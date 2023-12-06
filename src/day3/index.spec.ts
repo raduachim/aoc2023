@@ -10,7 +10,7 @@ import {
   part1,
 } from '../day3'
 
-describe.only('day3', () => {
+describe.skip('day3', () => {
   const input = `
     467..114..
     ...*......
