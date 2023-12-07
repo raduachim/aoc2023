@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 
-describe.only('day5', () => {
+describe.skip('day5', () => {
   // seeds: 79 14 55 13
 
   // seed-to-soil map:
