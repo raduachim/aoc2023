@@ -443,6 +443,7 @@ describe.only('day5 redone', () => {
     expect(calculateBackwards(parsed, 43)).toEqual(14)
     expect(calculateBackwards(parsed, 86)).toEqual(55)
     expect(calculateBackwards(parsed, 35)).toEqual(13)
+    expect(calculateBackwards(parsed, 135)).toEqual(13)
   })
 
   // it('works to get a value from a map for a value', () => {
@@ -529,22 +530,22 @@ describe.only('day5 redone', () => {
     }
   }
 
-  it('works for part2 with test input', () => {
-    const input = readFileSync('./src/day5/input', 'utf8')
-    const parsed = parseInput(input)
-    // console.log(group(parsed.seeds))
+  // it('works for part2 with test input', () => {
+  //   const input = readFileSync('./src/day5/input', 'utf8')
+  //   const parsed = parseInput(input)
+  //   // console.log(group(parsed.seeds))
 
-    let min = Infinity
+  //   let min = Infinity
 
-    group(parsed.seeds).forEach((range) => {
-      const result = calculateRangeBackwards(parsed, range)
-      // const result = calculateRange(parsed, range)
+  //   group(parsed.seeds).forEach((range) => {
+  //     const result = calculateRangeBackwards(parsed, range)
+  //     // const result = calculateRange(parsed, range)
 
-      if (result < min) {
-        min = result
-      }
-    })
+  //     if (result < min) {
+  //       min = result
+  //     }
+  //   })
 
-    console.log(min)
-  })
+  //   console.log(min)
+  // })
 })

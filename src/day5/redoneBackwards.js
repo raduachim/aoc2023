@@ -252,7 +252,21 @@ const calculateRange = (parsed, range) => {
   return min
 }
 
-const calculateRangeBackwards = (parsed, range) => {
+// function that takes input the grouped ranges and a value as input
+// it checks if the values is in any of the ranges
+// if it is it will return true
+// if it is not it will return false
+const isInRange = (ranges, value) => {
+  for (let i = 0; i < ranges.length; i++) {
+    const range = ranges[i]
+    if (value >= range[0] && value <= range[0] + range[1]) {
+      return true
+    }
+  }
+  return false
+}
+
+const calculateRangesBackwards = (parsed, ranges) => {
   let min = 0
 
   while (true) {
@@ -260,9 +274,11 @@ const calculateRangeBackwards = (parsed, range) => {
       console.log('processed 100 million numbers')
     }
     const result = calculateBackwards(parsed, min)
-    if (result >= range[0] && result <= range[0] + range[1]) {
+
+    if (isInRange(ranges, result)) {
       return min
     }
+
     min++
   }
 }
@@ -270,14 +286,4 @@ const calculateRangeBackwards = (parsed, range) => {
 const input = readFileSync('./src/day5/input', 'utf8')
 const parsed = parseInput(input)
 
-let min = Infinity
-
-group(parsed.seeds).forEach((range) => {
-  const result = calculateRangeBackwards(parsed, range)
-  if (result < min) {
-    min = result
-  }
-  console.log('range - result', range, result, min)
-})
-
-console.log(min)
+console.log(calculateRangesBackwards(parsed, group(parsed.seeds)))
