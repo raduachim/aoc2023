@@ -197,11 +197,32 @@ describe.only('day5 redone', () => {
   // it finds the source range that contains the number
   // if a range is found it will calculate the result for the number being the number minus the start of the source range plus the start of the destination range
   // if no range is found it will return the number
-  const getResult = (map: Map, number: number): number => {
+  // const getResult = (map: Map, number: number): number => {
+  //   for (let i = 0; i < map.length; i++) {
+  //     const range = map[i]
+  //     if (number >= range.source[0] && number <= range.source[1]) {
+  //       return number - range.source[0] + range.destination[0]
+  //     }
+  //   }
+  //   return number
+  // }
+
+  const getResult = (
+    map: Map,
+    number: number,
+    rangeToSearch: 'source' | 'destination' = 'source'
+  ): number => {
     for (let i = 0; i < map.length; i++) {
       const range = map[i]
-      if (number >= range.source[0] && number <= range.source[1]) {
-        return number - range.source[0] + range.destination[0]
+      if (
+        number >= range[rangeToSearch][0] &&
+        number <= range[rangeToSearch][1]
+      ) {
+        if (rangeToSearch === 'source') {
+          return number - range.source[0] + range.destination[0]
+        } else {
+          return number - range.destination[0] + range.source[0]
+        }
       }
     }
     return number
@@ -247,6 +268,47 @@ describe.only('day5 redone', () => {
         )
       )
     )
+  }
+
+  // function that takes an Input and a value and returns a number as a result
+  const calculateBackwards = (parsed: Input, value: number): number => {
+    const seedToSoilMap = parsed.seedToSoilMap
+    const soilToFertilizerMap = parsed.soilToFertilizerMap
+    const fertilizerToWaterMap = parsed.fertilizerToWaterMap
+    const waterToLightMap = parsed.waterToLightMap
+    const lightToTemperatureMap = parsed.lightToTemperatureMap
+    const temperatureToHumidityMap = parsed.temperatureToHumidityMap
+    const humidityToLocationMap = parsed.humidityToLocationMap
+
+    const humidityValue = getResult(humidityToLocationMap, value, 'destination')
+
+    const temperatureValue = getResult(
+      temperatureToHumidityMap,
+      humidityValue,
+      'destination'
+    )
+
+    const lightValue = getResult(
+      lightToTemperatureMap,
+      temperatureValue,
+      'destination'
+    )
+
+    const waterValue = getResult(waterToLightMap, lightValue, 'destination')
+
+    const fertilizerValue = getResult(
+      fertilizerToWaterMap,
+      waterValue,
+      'destination'
+    )
+    const soilValue = getResult(
+      soilToFertilizerMap,
+      fertilizerValue,
+      'destination'
+    )
+    const seedValue = getResult(seedToSoilMap, soilValue, 'destination')
+
+    return seedValue
   }
 
   const calculatePart1 = (parsed: Input): number => {
@@ -374,6 +436,15 @@ describe.only('day5 redone', () => {
     expect(parseInput(input)).toEqual(expected)
   })
 
+  it('works to parse a range going backwards', () => {
+    const parsed = parseInput(input)
+
+    expect(calculateBackwards(parsed, 82)).toEqual(79)
+    expect(calculateBackwards(parsed, 43)).toEqual(14)
+    expect(calculateBackwards(parsed, 86)).toEqual(55)
+    expect(calculateBackwards(parsed, 35)).toEqual(13)
+  })
+
   // it('works to get a value from a map for a value', () => {
   //   const parsed = parseInput(input)
 
@@ -446,6 +517,18 @@ describe.only('day5 redone', () => {
     return min
   }
 
+  const calculateRangeBackwards = (parsed: Input, range: number[]): number => {
+    let min = 0
+
+    while (true) {
+      const result = calculateBackwards(parsed, min)
+      if (result >= range[0] && result <= range[0] + range[1]) {
+        return min
+      }
+      min++
+    }
+  }
+
   it('works for part2 with test input', () => {
     const input = readFileSync('./src/day5/input', 'utf8')
     const parsed = parseInput(input)
@@ -454,11 +537,12 @@ describe.only('day5 redone', () => {
     let min = Infinity
 
     group(parsed.seeds).forEach((range) => {
-      const result = calculateRange(parsed, range)
+      const result = calculateRangeBackwards(parsed, range)
+      // const result = calculateRange(parsed, range)
+
       if (result < min) {
         min = result
       }
-      console.log('range - result', range, result, min)
     })
 
     console.log(min)
