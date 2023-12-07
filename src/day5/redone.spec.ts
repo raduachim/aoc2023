@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 
-describe.only('day5 redone', () => {
+describe('day5 redone', () => {
   const input = `
   seeds: 79 14 55 13
 
@@ -443,7 +443,7 @@ describe.only('day5 redone', () => {
     expect(calculateBackwards(parsed, 43)).toEqual(14)
     expect(calculateBackwards(parsed, 86)).toEqual(55)
     expect(calculateBackwards(parsed, 35)).toEqual(13)
-    expect(calculateBackwards(parsed, 135)).toEqual(13)
+    expect(calculateBackwards(parsed, 13)).toEqual(38)
   })
 
   // it('works to get a value from a map for a value', () => {
@@ -518,34 +518,44 @@ describe.only('day5 redone', () => {
     return min
   }
 
-  const calculateRangeBackwards = (parsed: Input, range: number[]): number => {
+  const calculateRangesBackwards = (parsed: Input, ranges: number[][]) => {
     let min = 0
 
     while (true) {
+      if (min % 100000000 === 0) {
+        console.log('processed 100 million numbers')
+      }
       const result = calculateBackwards(parsed, min)
-      if (result >= range[0] && result <= range[0] + range[1]) {
+
+      if (isInRange(ranges, result)) {
         return min
       }
+
       min++
     }
   }
 
-  // it('works for part2 with test input', () => {
-  //   const input = readFileSync('./src/day5/input', 'utf8')
-  //   const parsed = parseInput(input)
-  //   // console.log(group(parsed.seeds))
+  // function that takes input the grouped ranges and a value as input
+  // it checks if the values is in any of the ranges
+  // if it is it will return true
+  // if it is not it will return false
+  const isInRange = (ranges: number[][], value: number) => {
+    for (let i = 0; i < ranges.length; i++) {
+      const range = ranges[i]
+      if (value >= range[0] && value <= range[0] + range[1]) {
+        return true
+      }
+    }
+    return false
+  }
 
-  //   let min = Infinity
+  it.skip('works for part2 with test input', () => {
+    const input = readFileSync('./src/day5/input', 'utf8')
+    const parsed = parseInput(input)
+    // console.log(group(parsed.seeds))
 
-  //   group(parsed.seeds).forEach((range) => {
-  //     const result = calculateRangeBackwards(parsed, range)
-  //     // const result = calculateRange(parsed, range)
+    const min = calculateRangesBackwards(parsed, group(parsed.seeds))
 
-  //     if (result < min) {
-  //       min = result
-  //     }
-  //   })
-
-  //   console.log(min)
-  // })
+    expect(min).toEqual(23738616)
+  })
 })
