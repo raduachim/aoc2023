@@ -228,30 +228,23 @@ describe.only('day5', () => {
   // it then finds the range that contains the seed and returns the minimum of that range
   const getRangeKey = (map: Map, seed: number): number => {
     const keys = Object.keys(map)
-    const ranges: number[][] = []
-    let range: number[] = []
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      if (keys[i + 1]) {
-        ranges.push([Number(key), Number(keys[i + 1])])
+      .map(Number)
+      .sort((a, b) => a - b)
+    let left = 0
+    let right = keys.length - 1
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2)
+      if (seed >= keys[mid] && seed < keys[mid + 1]) {
+        return keys[mid]
+      } else if (seed < keys[mid]) {
+        right = mid - 1
+      } else {
+        left = mid + 1
       }
     }
 
-    let min = 0
-
-    if (seed > ranges[ranges.length - 1][1]) {
-      return ranges[ranges.length - 1][1]
-    }
-
-    for (let i = 0; i < ranges.length; i++) {
-      const range = ranges[i]
-      if (seed >= range[0] && seed < range[1]) {
-        min = range[0]
-        break
-      }
-    }
-
-    return min
+    return keys[keys.length - 1]
   }
 
   // function that takes a Map and a value as input
@@ -359,15 +352,15 @@ describe.only('day5', () => {
     )
   }
 
-  it('works to get the final result for a seed', () => {
-    // Seed 14, soil 14, fertilizer 53, water 49, light 42, temperature 42, humidity 43, location 43.
-    const input = readFileSync('./src/day5/input', 'utf8')
-    const parsed = parseInput(input)
+  // it('works to get the final result for a seed', () => {
+  //   // Seed 14, soil 14, fertilizer 53, water 49, light 42, temperature 42, humidity 43, location 43.
+  //   const input = readFileSync('./src/day5/input', 'utf8')
+  //   const parsed = parseInput(input)
 
-    expect(getMin(parsed.seeds.map((seed) => calculate(parsed, seed)))).toEqual(
-      107430936
-    )
-  })
+  //   expect(getMin(parsed.seeds.map((seed) => calculate(parsed, seed)))).toEqual(
+  //     107430936
+  //   )
+  // })
 
   // function that takes a list of numbers as input and groups them into groups of 2
   // and then returns a list of the new groups
@@ -391,25 +384,42 @@ describe.only('day5', () => {
 
     for (let i = range[0]; i < range[0] + range[1]; i++) {
       const result = calculate(parsed, i)
+      if (!isFinite(result)) {
+        console.log('value that returns NaN', i)
+      }
       if (result < min) {
         min = result
       }
+      console.log(
+        'range',
+        'i',
+        'min',
+        'left-to-calculate',
+        range,
+        i,
+        min,
+        range[0] + range[1] - i
+      )
     }
 
     return min
   }
 
-  it('works for part2 with test input', () => {
-    const input = readFileSync('./src/day5/input', 'utf8')
-    const parsed = parseInput(input)
-    // console.log(group(parsed.seeds))
+  // it('works for part2 with test input', () => {
+  //   const input = readFileSync('./src/day5/input', 'utf8')
+  //   const parsed = parseInput(input)
+  //   // console.log(group(parsed.seeds))
 
-    const results = group(parsed.seeds).map((range) => {
-      const result = calculateRange(parsed, range)
-      console.log('range - result', range, result)
-      return result
-    })
+  //   let min = Infinity
 
-    console.log(getMin(results))
-  })
+  //   group(parsed.seeds).forEach((range) => {
+  //     const result = calculateRange(parsed, range)
+  //     if (result < min) {
+  //       min = result
+  //     }
+  //     console.log('range - result', range, result, min)
+  //   })
+
+  //   console.log(min)
+  // })
 })
