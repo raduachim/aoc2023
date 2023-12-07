@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+const { readFileSync } = require('fs')
 
 // function that sorts a Map by the source first element
 const sortMap = (map) => {
@@ -188,16 +188,14 @@ const calculateRange = (parsed, range) => {
     if (result < min) {
       min = result
     }
-    console.log(
-      'range',
-      'i',
-      'min',
-      'left-to-calculate',
-      range,
-      i,
-      min,
-      range[0] + range[1] - i
-    )
+
+    if (i % 100000000 === 0) {
+      console.log(
+        'processed 100 million numbers',
+        'left-to-calculate',
+        range[0] + range[1] - i
+      )
+    }
   }
 
   return min
@@ -208,6 +206,7 @@ const parsed = parseInput(input)
 // console.log(group(parsed.seeds))
 
 let min = Infinity
+
 
 group(parsed.seeds).forEach((range) => {
   const result = calculateRange(parsed, range)
