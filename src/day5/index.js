@@ -72,6 +72,7 @@ const parseInput = (input) => {
 
 const getResult = (map, value) => {
   const rangeKey = getRangeKey(map, value)
+  console.log('rangeKey', rangeKey)
   return map[rangeKey] + value - rangeKey
 }
 
@@ -108,21 +109,22 @@ const getRangeKey = (map, seed) => {
 const calculate = (parsed, value) => {
   const { seed, soil, fertilizer, water, light, temperature, humidity } = parsed
 
-  // const seedValue = getResult(seed, value)
+  const seedValue = getResult(seed, value)
   // console.log('seedValue', seedValue)
-  // const soilValue = getResult(soil, seedValue)
+  const soilValue = getResult(soil, seedValue)
   // console.log('soilValue', soilValue)
-  // const fertilizerValue = getResult(fertilizer, soilValue)
+  const fertilizerValue = getResult(fertilizer, soilValue)
   // console.log('fertilizerValue', fertilizerValue)
-  // const waterValue = getResult(water, fertilizerValue)
+  const waterValue = getResult(water, fertilizerValue)
   // console.log('waterValue', waterValue)
-  // const lightValue = getResult(light, waterValue)
+  const lightValue = getResult(light, waterValue)
   // console.log('lightValue', lightValue)
-  // const temperatureValue = getResult(temperature, lightValue)
+  const temperatureValue = getResult(temperature, lightValue)
   // console.log('temperatureValue', temperatureValue)
-  // const humidityValue = getResult(humidity, temperatureValue)
-  // console.log('humidityValue', humidityValue)
-  // return humidityValue
+  const humidityValue = getResult(humidity, temperatureValue)
+  console.log(humidity)
+  console.log('humidityValue', humidityValue)
+  return humidityValue
 
   return getResult(
     humidity,
@@ -157,7 +159,7 @@ const calculateRange = (parsed, range) => {
     if (!isFinite(result)) {
       console.log('value that returns NaN', i)
     }
-    console.log('result', result, min)
+    console.log('range', 'i', 'result', range, i, result, min)
     if (result < min) {
       min = result
     }
@@ -167,16 +169,18 @@ const calculateRange = (parsed, range) => {
 
 const parsed = parseInput(input)
 
-// console.log(calculate(parsed, 3684516104))
+console.log(calculate(parsed, 1779015275))
+console.log(calculate(parsed, 1779015276))
+console.log(calculate(parsed, 1779015277))
 
 let min = Infinity
 
-group(parsed.seeds).forEach((range) => {
-  const result = calculateRange(parsed, range)
-  if (result < min) {
-    min = result
-  }
-  console.log('range - result', range, result, min)
-})
+// group(parsed.seeds).forEach((range) => {
+//   const result = calculateRange(parsed, range)
+//   if (result < min) {
+//     min = result
+//   }
+//   console.log('range - result', range, result, min)
+// })
 
-console.log(min)
+// console.log(min)
