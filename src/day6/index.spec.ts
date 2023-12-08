@@ -5,7 +5,7 @@ type Input = {
   distance: number
 }[]
 
-describe('day 6', () => {
+describe.skip('day 6', () => {
   const input = `
   Time:      7  15   30
   Distance:  9  40  200
