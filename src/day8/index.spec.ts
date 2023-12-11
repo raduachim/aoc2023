@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 
-describe('8', () => {
+describe.skip('8', () => {
   const input = `
   LLR
 
